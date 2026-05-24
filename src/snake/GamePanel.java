@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Random;
+
 
 
 public class GamePanel extends JPanel implements ActionListener {
@@ -23,6 +25,10 @@ public class GamePanel extends JPanel implements ActionListener {
     char direction = 'R';
     boolean running = false;
     Timer timer;
+
+    int appleX;
+    int appleY;
+    Random random = new Random();
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(Screen_Width, Screen_Height));
@@ -37,6 +43,8 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void startGame() {
+        newAppel();
+
         for (int i = 0; i < 6; i++) {
             snake.add(new Point(150 - (i * Unit_Size), 50));
         }
@@ -45,6 +53,12 @@ public class GamePanel extends JPanel implements ActionListener {
 
         timer = new Timer(Delay, this);
         timer.start();
+    }
+
+    public void newAppel() {
+        appleX = random.nextInt((int)(Screen_Width / Unit_Size)) * Unit_Size;
+
+        appleY = random.nextInt((int)(Screen_Height / Unit_Size)) * Unit_Size;
     }
 
     @Override
@@ -61,6 +75,9 @@ public class GamePanel extends JPanel implements ActionListener {
                 g.drawLine(i * Unit_Size, 0, i * Unit_Size, Screen_Height);
                 g.drawLine(0, i * Unit_Size, Screen_Width, i * Unit_Size);
             }
+
+            g.setColor(Color.RED);
+            g.fillOval(appleX, appleY, Unit_Size, Unit_Size);
 
 
             for (int i = 0; i < snake.size(); i++) {
