@@ -43,7 +43,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void startGame() {
-        newAppel();
+        newApple();
 
         for (int i = 0; i < 6; i++) {
             snake.add(new Point(150 - (i * Unit_Size), 50));
@@ -55,7 +55,7 @@ public class GamePanel extends JPanel implements ActionListener {
         timer.start();
     }
 
-    public void newAppel() {
+    public void newApple() {
         appleX = random.nextInt((int)(Screen_Width / Unit_Size)) * Unit_Size;
 
         appleY = random.nextInt((int)(Screen_Height / Unit_Size)) * Unit_Size;
@@ -89,6 +89,8 @@ public class GamePanel extends JPanel implements ActionListener {
                     g.fillRect(snake.get(i).x, snake.get(i).y, Unit_Size, Unit_Size);
                 }
             }
+        } else {
+
         }
     }
 
@@ -118,10 +120,40 @@ public class GamePanel extends JPanel implements ActionListener {
 
     }
 
+    public void checkApple() {
+        Point cap = snake.get(0);
+        if ((cap.x == appleX) & (cap.y == appleY)) {
+            Point coada = snake.get(snake.size() - 1);
+            snake.add(new Point(coada.x, coada.y));
+
+            newApple();
+        }
+    }
+
+    public void checkCollisions() {
+        Point cap = snake.get(0);
+
+        for (int i = 1; i < snake.size(); i++) {
+            if ((cap.x == snake.get(i).x) && (cap.y == snake.get(i).y)) {
+                running = false;
+            }
+        }
+
+        if (cap.x < 0 || cap.x >= Screen_Width || cap.y < 0 || cap.y >= Screen_Height) {
+            running = false;
+        }
+
+        if (!running) {
+            timer.stop();
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (running) {
             move();
+            checkApple();
+            checkCollisions();
         }
         repaint();
     }
