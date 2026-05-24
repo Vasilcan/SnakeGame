@@ -9,6 +9,8 @@ import java.util.List;
 import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 public class GamePanel extends JPanel implements ActionListener {
@@ -26,6 +28,9 @@ public class GamePanel extends JPanel implements ActionListener {
         this.setPreferredSize(new Dimension(Screen_Width, Screen_Height));
         this.setBackground(Color.BLACK);
         this.setFocusable(true);
+
+        this.addKeyListener(new CompasTastatura());
+
         startGame();
 
 
@@ -102,6 +107,35 @@ public class GamePanel extends JPanel implements ActionListener {
             move();
         }
         repaint();
+    }
+
+
+    public class CompasTastatura extends KeyAdapter {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_LEFT:
+                    if (direction != 'R') {
+                        direction = 'L';
+                    }
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    if (direction != 'L') {
+                        direction = 'R';
+                    }
+                    break;
+                case KeyEvent.VK_UP:
+                    if (direction != 'D') {
+                        direction = 'U';
+                    }
+                    break;
+                case KeyEvent.VK_DOWN:
+                    if (direction != 'U') {
+                        direction = 'D';
+                    }
+                    break;
+            }
+        }
     }
 }
 
