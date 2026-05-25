@@ -15,6 +15,8 @@ import java.util.Random;
 
 
 
+
+
 public class GamePanel extends JPanel implements ActionListener {
     static final int Screen_Width = 600;
     static final int Screen_Height = 600;
@@ -28,6 +30,9 @@ public class GamePanel extends JPanel implements ActionListener {
 
     int appleX;
     int appleY;
+
+    int applesEaten = 0;
+
     Random random = new Random();
 
     public GamePanel() {
@@ -89,9 +94,26 @@ public class GamePanel extends JPanel implements ActionListener {
                     g.fillRect(snake.get(i).x, snake.get(i).y, Unit_Size, Unit_Size);
                 }
             }
-        } else {
 
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Ink Free", Font.BOLD, 30));
+            FontMetrics metrics = getFontMetrics(g.getFont());
+            g.drawString("Scor: " + applesEaten, (Screen_Width - metrics.stringWidth("Scor: " + applesEaten)) / 2, g.getFont().getSize());
+        } else {
+            gameOver(g);
         }
+    }
+
+    public void gameOver(Graphics g) {
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Ink Free", Font.BOLD, 40));
+        FontMetrics metrics1 = getFontMetrics(g.getFont());
+        g.drawString("Scor final: " + applesEaten, (Screen_Width - metrics1.stringWidth("Scor Final: " + applesEaten)) / 2, g.getFont().getSize());
+
+        g.setColor(Color.red);
+        g.setFont(new Font("Ink Free", Font.BOLD, 75));
+        FontMetrics metrics2 =  getFontMetrics(g.getFont());
+        g.drawString("GAME OVER", (Screen_Width - metrics2.stringWidth("GAME OVER")) / 2, Screen_Height / 2);
     }
 
     public void move() {
@@ -125,6 +147,8 @@ public class GamePanel extends JPanel implements ActionListener {
         if ((cap.x == appleX) & (cap.y == appleY)) {
             Point coada = snake.get(snake.size() - 1);
             snake.add(new Point(coada.x, coada.y));
+
+            applesEaten++;
 
             newApple();
         }
