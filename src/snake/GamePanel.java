@@ -4,17 +4,16 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Timer;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Random;
-
-
-
+import java.awt.event.ActionEvent;
+//Lucru cu fisiere
 
 
 public class GamePanel extends JPanel implements ActionListener {
@@ -32,7 +31,7 @@ public class GamePanel extends JPanel implements ActionListener {
     int appleY;
 
     int applesEaten = 0;
-
+    int highScore = 0;
     Random random = new Random();
 
     public GamePanel() {
@@ -41,6 +40,8 @@ public class GamePanel extends JPanel implements ActionListener {
         this.setFocusable(true);
 
         this.addKeyListener(new CompasTastatura());
+
+        loadHighScore();
 
         startGame();
 
@@ -110,6 +111,11 @@ public class GamePanel extends JPanel implements ActionListener {
         FontMetrics metrics1 = getFontMetrics(g.getFont());
         g.drawString("Scor final: " + applesEaten, (Screen_Width - metrics1.stringWidth("Scor Final: " + applesEaten)) / 2, g.getFont().getSize());
 
+
+        g.setColor(Color.YELLOW);
+        g.drawString("High Score: " + highScore, (Screen_Width - metrics1.stringWidth("High Score: " + highScore)) / 2, g.getFont().getSize() + 50);
+
+
         g.setColor(Color.red);
         g.setFont(new Font("Ink Free", Font.BOLD, 75));
         FontMetrics metrics2 =  getFontMetrics(g.getFont());
@@ -144,7 +150,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void checkApple() {
         Point cap = snake.get(0);
-        if ((cap.x == appleX) & (cap.y == appleY)) {
+        if ((cap.x == appleX) && (cap.y == appleY)) {
             Point coada = snake.get(snake.size() - 1);
             snake.add(new Point(coada.x, coada.y));
 
@@ -160,6 +166,7 @@ public class GamePanel extends JPanel implements ActionListener {
         for (int i = 1; i < snake.size(); i++) {
             if ((cap.x == snake.get(i).x) && (cap.y == snake.get(i).y)) {
                 running = false;
+                break;
             }
         }
 
@@ -169,7 +176,35 @@ public class GamePanel extends JPanel implements ActionListener {
 
         if (!running) {
             timer.stop();
+
+            checkAndSaveHighScore();
         }
+    }
+
+    public void loadHighScore() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("highscore.txt"))) {
+            String line = reader.readLine();
+            if (line != null) {
+                highScore = Integer.parseInt(line);
+            }
+        } catch (IOException e) {
+
+            System.out.println("Fisierul de High Score nu exista inca. Se va crea la final.");
+        }
+    }
+
+    public void checkAndSaveHighScore() {
+        if (applesEaten > highScore) {
+            highScore =  applesEaten;
+
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("highscore.txt"))) {
+                writer.write(String.valueOf(highScore));
+            } catch (IOException e) {
+                System.out.println("Eroare la salvarea fisierului: " + e.getMessage());
+            }
+        }
+
     }
 
     @Override
